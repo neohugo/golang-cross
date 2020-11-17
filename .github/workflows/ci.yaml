@@ -21,8 +21,8 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v') != true
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Go environment
-        shell: bash
+      - name: Prepare
+        id: prep
         run: |
           echo "tags=${DOCKER_NAME}:latest" >> $GITHUB_ENV
       - name: Set up QEMU
@@ -39,7 +39,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ tags }}
+          tags: ${{ steps.prep.outputs.tags }}
           build-args: |
             GO_VERSION=$GO_VERSION
             OSX_SDK=$(OSX_SDK)
