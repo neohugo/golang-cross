@@ -35,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: $DOCKER_NAME:latest
+          tags: ${{ DOCKER_NAME }}:latest
           build-args: |
             GO_VERSION=$GO_VERSION
             OSX_SDK=$(OSX_SDK)
@@ -63,7 +63,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: $DOCKER_NAME:latest,$DOCKER_NAME:v$GO_VERSION
+          tags: ${{ DOCKER_NAME }}:latest,${{ DOCKER_NAME }}:v${{ GO_VERSION }}
           build-args: |
             GO_VERSION=$GO_VERSION
             OSX_SDK=$(OSX_SDK)
