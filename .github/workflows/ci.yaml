@@ -1,0 +1,75 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request:
+
+env:
+  GO_VERSION:       "1.15.5"
+  DOCKER_NAME:      "neohugo/golang-cross"
+  OSX_SDK:          "MacOSX10.15.sdk"
+  OSX_SDK_SUM:      "4051d210bf232ccb5eee863d6a4052afa800001810a2a42e354c9637ec78cd2c"
+  OSX_VERSION_MIN:  "10.12"
+  OSX_CROSS_COMMIT: "364703ca0962c4a12688daf8758802a5df9e3221"
+  DEBIAN_FRONTEND:  "noninteractive"
+
+jobs:
+  main:
+    if: startsWith(github.ref, 'refs/tags/v') != true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: $DOCKER_NAME:latest
+          build-args: |
+            GO_VERSION=$GO_VERSION
+            OSX_SDK=$(OSX_SDK)
+            OSX_SDK_SUM=$(OSX_SDK_SUM)
+            OSX_VERSION_MIN=$(OSX_VERSION_MIN)
+            OSX_CROSS_COMMIT=$(OSX_CROSS_COMMIT)
+            DEBIAN_FRONTEND=$(DEBIAN_FRONTEND)
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  tags:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build base
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: $DOCKER_NAME:latest,$DOCKER_NAME:v$GO_VERSION
+          build-args: |
+            GO_VERSION=$GO_VERSION
+            OSX_SDK=$(OSX_SDK)
+            OSX_SDK_SUM=$(OSX_SDK_SUM)
+            OSX_VERSION_MIN=$(OSX_VERSION_MIN)
+            OSX_CROSS_COMMIT=$(OSX_CROSS_COMMIT)
+            DEBIAN_FRONTEND=$(DEBIAN_FRONTEND)
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
