@@ -35,6 +35,7 @@ RUN \
         binutils-multiarch \
         build-essential \
         clang \
+        cmake \
         gcc \
         g++ \
         mingw-w64 \
