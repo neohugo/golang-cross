@@ -25,6 +25,12 @@ jobs:
         id: prep
         run: |
           echo ::set-output name=tags::${DOCKER_NAME}:latest
+          echo ::set-output name=go_version::${GO_VERSION}
+          echo ::set-output name=osx_sdk::${OSX_SDK}
+          echo ::set-output name=osx_sdk_sum::${OSX_SDK_SUM}
+          echo ::set-output name=osx_version_min::${OSX_VERSION_MIN}
+          echo ::set-output name=osx_cross_commit::${OSX_CROSS_COMMIT}
+          echo ::set-output name=debian_frontend::${DEBIAN_FRONTEND}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -41,12 +47,12 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-            GO_VERSION=$GO_VERSION
-            OSX_SDK=$(OSX_SDK)
-            OSX_SDK_SUM=$(OSX_SDK_SUM)
-            OSX_VERSION_MIN=$(OSX_VERSION_MIN)
-            OSX_CROSS_COMMIT=$(OSX_CROSS_COMMIT)
-            DEBIAN_FRONTEND=$(DEBIAN_FRONTEND)
+            GO_VERSION=${{ steps.prep.outputs.go_version }}
+            OSX_SDK=${{ steps.prep.outputs.osx_sdk }}
+            OSX_SDK_SUM=${{ steps.prep.outputs.osx_sdk_sum }}
+            OSX_VERSION_MIN=${{ steps.prep.outputs.osx_version_min }}
+            OSX_CROSS_COMMIT=${{ steps.prep.outputs.osx_cross_commit }}
+            DEBIAN_FRONTEND=${{ steps.prep.outputs.debian_frontend }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
   tags:
