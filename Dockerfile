@@ -1,27 +1,89 @@
+# golang parameters
 ARG GO_VERSION
-FROM troian/golang-cross-builder:v${GO_VERSION}
+FROM golang:${GO_VERSION}-buster AS base
 
-LABEL maintainer="Artur Troian <troian dot ap at gmail dot com>"
+ENV OSX_CROSS_PATH=/osxcross
 
-COPY entrypoint.sh /
+FROM base AS osx-sdk
+ARG OSX_SDK
+ARG OSX_SDK_SUM
 
-ARG GORELEASER_VERSION
-ARG GORELEASER_SHA
+COPY tars/${OSX_SDK}.tar.xz "${OSX_CROSS_PATH}/tarballs/${OSX_SDK}.tar.xz"
+RUN echo "${OSX_SDK_SUM}" "${OSX_CROSS_PATH}/tarballs/${OSX_SDK}.tar.xz" | sha256sum -c -
 
+FROM base AS osx-cross-base
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install deps
 RUN \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
- && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
- && apt-get update \
- && apt-get --no-install-recommends -y install docker-ce docker-ce-cli \
+    set -x; \
+    echo "Starting image build for Debian Stretch" \
+ && dpkg --add-architecture arm64 \
+ && dpkg --add-architecture armel \
+ && dpkg --add-architecture armhf \
+ && dpkg --add-architecture i386 \
+ && dpkg --add-architecture mips \
+ && dpkg --add-architecture mipsel \
+ && dpkg --add-architecture powerpc \
+ && dpkg --add-architecture ppc64el \
+ && apt-get update                  \
+ && apt-get install --no-install-recommends -y -q \
+        autoconf \
+        automake \
+        bc \
+        binfmt-support \
+        binutils-multiarch \
+        build-essential \
+        clang \
+        gcc \
+        g++ \
+        mingw-w64 \
+        crossbuild-essential-arm64 \
+        crossbuild-essential-armel \
+        crossbuild-essential-armhf \
+        crossbuild-essential-mipsel \
+        crossbuild-essential-ppc64el \
+        devscripts \
+        libtool \
+        llvm \
+        multistrap \
+        patch \
+        qemu-user-static \
+ && apt -y autoremove \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+FROM osx-cross-base AS osx-cross
+ARG OSX_CROSS_COMMIT
+WORKDIR "${OSX_CROSS_PATH}"
+# install osxcross:
+RUN \
+    git clone https://github.com/tpoechtrager/osxcross.git . \
+ && git checkout -q "${OSX_CROSS_COMMIT}" \
+ && rm -rf ./.git
+
+COPY --from=osx-sdk "${OSX_CROSS_PATH}/." "${OSX_CROSS_PATH}/"
+ARG OSX_VERSION_MIN
+RUN \
+    apt-get update \
+ && apt-get install --no-install-recommends -y -q \
+    autotools-dev \
+    binutils-multiarch-dev \
+    libxml2-dev \
+    lzma-dev \
+    libssl-dev \
+    zlib1g-dev \
+    libmpc-dev \
+    libmpfr-dev \
+    libgmp-dev \
+ && apt -y autoremove \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
- && GORELEASER_DOWNLOAD_FILE=goreleaser_Linux_x86_64.tar.gz \
- && GORELEASER_DOWNLOAD_URL=https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/${GORELEASER_DOWNLOAD_FILE} \
- && wget ${GORELEASER_DOWNLOAD_URL} \
- && echo "$GORELEASER_SHA $GORELEASER_DOWNLOAD_FILE" | sha256sum -c - || exit 1 \
- && tar -xzf $GORELEASER_DOWNLOAD_FILE -C /usr/bin/ goreleaser \
- && rm $GORELEASER_DOWNLOAD_FILE \
- && go get -u github.com/git-chglog/git-chglog/cmd/git-chglog \
- && chmod +x /entrypoint.sh
+ && UNATTENDED=yes OSX_VERSION_MIN=${OSX_VERSION_MIN} ./build.sh
 
-ENTRYPOINT ["bash", "/entrypoint.sh"]
+FROM osx-cross-base AS final
+LABEL maintainer="Prachya Saechua<blackb1rd@blackb1rd.dev>"
+ARG DEBIAN_FRONTEND=noninteractive
+
+COPY --from=osx-cross "${OSX_CROSS_PATH}/." "${OSX_CROSS_PATH}/"
+ENV PATH=${OSX_CROSS_PATH}/target/bin:$PATH
