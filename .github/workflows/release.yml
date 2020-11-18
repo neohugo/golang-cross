@@ -19,7 +19,7 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          echo ::set-output name=tags::ghcr.io/${DOCKER_NAME}:latest,ghcr.io/$DOCKER_NAME:${GITHUB_REF/refs\/tags\//},${DOCKER_NAME}:latest,$DOCKER_NAME:${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=tags::${DOCKER_NAME}:latest,$DOCKER_NAME:${GITHUB_REF/refs\/tags\//},ghcr.io/${DOCKER_NAME}:latest,ghcr.io/$DOCKER_NAME:${GITHUB_REF/refs\/tags\//}
           echo ::set-output name=go_version::${GITHUB_REF/refs\/tags\/v/}
           echo ::set-output name=osx_sdk::${OSX_SDK}
           echo ::set-output name=osx_sdk_sum::${OSX_SDK_SUM}
