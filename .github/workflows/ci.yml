@@ -51,7 +51,7 @@ jobs:
             OSX_CROSS_COMMIT=${{ steps.prep.outputs.osx_cross_commit }}
             DEBIAN_FRONTEND=${{ steps.prep.outputs.debian_frontend }}
       - name: Push to GitHub Packages
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           push: true
           username: ${{ github.actor }}
