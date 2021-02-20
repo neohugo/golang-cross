@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  GO_VERSION:       "1.15.5"
+  GO_VERSION:       "1.16.0"
   OSX_SDK:          "MacOSX10.15.sdk"
   OSX_SDK_SUM:      "4051d210bf232ccb5eee863d6a4052afa800001810a2a42e354c9637ec78cd2c"
   OSX_VERSION_MIN:  "10.12"
