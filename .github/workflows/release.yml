@@ -6,10 +6,10 @@ on:
 
 env:
   DOCKER_NAME:      "neohugo/golang-cross"
-  OSX_SDK:          "MacOSX10.15.sdk"
-  OSX_SDK_SUM:      "4051d210bf232ccb5eee863d6a4052afa800001810a2a42e354c9637ec78cd2c"
-  OSX_VERSION_MIN:  "10.12"
-  OSX_CROSS_COMMIT: "364703ca0962c4a12688daf8758802a5df9e3221"
+  OSX_SDK:          "MacOSX11.3.sdk.tar.xz"
+  OSX_SDK_SUM:      "d25f3b7ff84ddf2c9a87fc0377ee0ef63a25644ac497d3915b428a561a7a64d2"
+  OSX_VERSION_MIN:  "11.3"
+  OSX_CROSS_COMMIT: "035cc170338b7b252e3f13b0e3ccbf4411bffc41"
   DEBIAN_FRONTEND:  "noninteractive"
 
 jobs:
