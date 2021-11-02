@@ -8,8 +8,8 @@ FROM base AS osx-sdk
 ARG OSX_SDK
 ARG OSX_SDK_SUM
 
-COPY tars/${OSX_SDK}.tar.xz "${OSX_CROSS_PATH}/tarballs/${OSX_SDK}.tar.xz"
-RUN echo "${OSX_SDK_SUM}" "${OSX_CROSS_PATH}/tarballs/${OSX_SDK}.tar.xz" | sha256sum -c -
+COPY tars/${OSX_SDK} "${OSX_CROSS_PATH}/tarballs/${OSX_SDK}"
+RUN echo "${OSX_SDK_SUM}" "${OSX_CROSS_PATH}/tarballs/${OSX_SDK}" | sha256sum -c -
 
 FROM base AS osx-cross-base
 ARG DEBIAN_FRONTEND=noninteractive
