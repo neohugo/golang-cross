@@ -45,6 +45,7 @@ RUN \
                crossbuild-essential-ppc64el \
                devscripts \
                gcc \
+               gcc-multilib \
                libgmp-dev \
                libmpc-dev \
                libmpfr-dev \
@@ -55,7 +56,6 @@ RUN \
                lzma-dev \
                mingw-w64 \
                multistrap \
-               patch \
                patch \
                qemu-user-static \
                xz-utils \
