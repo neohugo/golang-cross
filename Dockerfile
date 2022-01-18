@@ -50,7 +50,6 @@ RUN \
                gcc-arm-linux-gnueabihf \
                gcc-mipsel-linux-gnu \
                gcc-powerpc64le-linux-gnu  \
-               gcc-multilib \
                libgmp-dev \
                libmpc-dev \
                libmpfr-dev \
