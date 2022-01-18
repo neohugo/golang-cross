@@ -1,6 +1,6 @@
 # golang parameters
 ARG GO_VERSION
-FROM golang:${GO_VERSION}-buster AS base
+FROM golang:${GO_VERSION}-bullseye AS base
 
 ENV OSX_CROSS_PATH=/osxcross
 
@@ -45,6 +45,11 @@ RUN \
                crossbuild-essential-ppc64el \
                devscripts \
                gcc \
+               gcc-aarch64-linux-gnu \
+               gcc-arm-linux-gnueabi \
+               gcc-arm-linux-gnueabihf \
+               gcc-mipsel-linux-gnu \
+               gcc-powerpc64le-linux-gnu  \
                gcc-multilib \
                libgmp-dev \
                libmpc-dev \
