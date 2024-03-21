@@ -19,13 +19,13 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          echo ::set-output name=tags::${DOCKER_NAME}:latest,$DOCKER_NAME:${GITHUB_REF/refs\/tags\//},ghcr.io/${DOCKER_NAME}:latest,ghcr.io/$DOCKER_NAME:${GITHUB_REF/refs\/tags\//}
-          echo ::set-output name=go_version::${GITHUB_REF/refs\/tags\/v/}
-          echo ::set-output name=osx_sdk::${OSX_SDK}
-          echo ::set-output name=osx_sdk_sum::${OSX_SDK_SUM}
-          echo ::set-output name=osx_version_min::${OSX_VERSION_MIN}
-          echo ::set-output name=osx_cross_commit::${OSX_CROSS_COMMIT}
-          echo ::set-output name=debian_frontend::${DEBIAN_FRONTEND}
+          echo "tags=${DOCKER_NAME}:latest,$DOCKER_NAME:${GITHUB_REF/refs\/tags\//},ghcr.io/${DOCKER_NAME}:latest,ghcr.io/$DOCKER_NAME:${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+          echo "go_version=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_OUTPUT
+          echo "osx_sdk=${OSX_SDK}" >> $GITHUB_OUTPUT
+          echo "osx_sdk_sum=${OSX_SDK_SUM}" >> $GITHUB_OUTPUT
+          echo "osx_version_min=${OSX_VERSION_MIN}" >> $GITHUB_OUTPUT
+          echo "osx_cross_commit=${OSX_CROSS_COMMIT}" >> $GITHUB_OUTPUT
+          echo "debian_frontend=${DEBIAN_FRONTEND}" >> $GITHUB_OUTPUT
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up QEMU
