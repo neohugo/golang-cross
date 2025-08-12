@@ -27,7 +27,7 @@ jobs:
           echo "osx_cross_commit=${OSX_CROSS_COMMIT}" >> $GITHUB_OUTPUT
           echo "debian_frontend=${DEBIAN_FRONTEND}" >> $GITHUB_OUTPUT
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
