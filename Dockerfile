@@ -52,9 +52,8 @@ RUN \
     libtool \
     libxml2-dev \
     llvm \
-    lzma-dev \
+    liblzma-dev \
     mingw-w64 \
-    multistrap \
     patch \
     qemu-user-static \
     xz-utils \
