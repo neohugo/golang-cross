@@ -1,6 +1,6 @@
 # golang parameters
 ARG GO_VERSION
-FROM golang:${GO_VERSION}-trixie⁠ AS base
+FROM golang:${GO_VERSION}-trixie AS base
 
 ENV OSX_CROSS_PATH=/osxcross
 
