@@ -6,12 +6,12 @@ on:
   pull_request_target:
 
 env:
-  GO_VERSION:       "1.22.1"
-  OSX_SDK:          "MacOSX11.3.sdk.tar.xz"
-  OSX_SDK_SUM:      "d25f3b7ff84ddf2c9a87fc0377ee0ef63a25644ac497d3915b428a561a7a64d2"
-  OSX_VERSION_MIN:  "11.3"
+  GO_VERSION: "1.25.1"
+  OSX_SDK: "MacOSX11.3.sdk.tar.xz"
+  OSX_SDK_SUM: "d25f3b7ff84ddf2c9a87fc0377ee0ef63a25644ac497d3915b428a561a7a64d2"
+  OSX_VERSION_MIN: "11.3"
   OSX_CROSS_COMMIT: "035cc170338b7b252e3f13b0e3ccbf4411bffc41"
-  DEBIAN_FRONTEND:  "noninteractive"
+  DEBIAN_FRONTEND: "noninteractive"
 
 jobs:
   main:
@@ -48,6 +48,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          provenance: mode=max
+          sbom: true
           file: ./Dockerfile
           push: true
           tags: |

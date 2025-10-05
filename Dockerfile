@@ -1,6 +1,6 @@
 # golang parameters
 ARG GO_VERSION
-FROM golang:${GO_VERSION}-bullseye AS base
+FROM golang:${GO_VERSION}-trixie⁠ AS base
 
 ENV OSX_CROSS_PATH=/osxcross
 
@@ -17,53 +17,48 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Install deps
 RUN \
     set -x; \
-    echo "Starting image build for Debian Stretch" \
+    echo "Starting image build for Debian Trixie" \
     && dpkg --add-architecture arm64 \
     && dpkg --add-architecture armel \
     && dpkg --add-architecture armhf \
     && dpkg --add-architecture i386 \
-    && dpkg --add-architecture mips \
-    && dpkg --add-architecture mipsel \
-    && dpkg --add-architecture powerpc \
     && dpkg --add-architecture ppc64el \
     && apt-get update                  \
     && apt-get install --no-install-recommends -y -q \
-               autoconf \
-               automake \
-               autotools-dev \
-               bc \
-               binfmt-support \
-               binutils-multiarch \
-               binutils-multiarch-dev \
-               build-essential \
-               clang \
-               cmake \
-               crossbuild-essential-arm64 \
-               crossbuild-essential-armel \
-               crossbuild-essential-armhf \
-               crossbuild-essential-mipsel \
-               crossbuild-essential-ppc64el \
-               devscripts \
-               gcc \
-               gcc-aarch64-linux-gnu \
-               gcc-arm-linux-gnueabi \
-               gcc-arm-linux-gnueabihf \
-               gcc-mipsel-linux-gnu \
-               gcc-powerpc64le-linux-gnu  \
-               libgmp-dev \
-               libmpc-dev \
-               libmpfr-dev \
-               libssl-dev \
-               libtool \
-               libxml2-dev \
-               llvm \
-               lzma-dev \
-               mingw-w64 \
-               multistrap \
-               patch \
-               qemu-user-static \
-               xz-utils \
-               zlib1g-dev \
+    autoconf \
+    automake \
+    autotools-dev \
+    bc \
+    binfmt-support \
+    binutils-multiarch \
+    binutils-multiarch-dev \
+    build-essential \
+    clang \
+    cmake \
+    crossbuild-essential-arm64 \
+    crossbuild-essential-armel \
+    crossbuild-essential-armhf \
+    crossbuild-essential-ppc64el \
+    devscripts \
+    gcc \
+    gcc-aarch64-linux-gnu \
+    gcc-arm-linux-gnueabi \
+    gcc-arm-linux-gnueabihf \
+    gcc-powerpc64le-linux-gnu  \
+    libgmp-dev \
+    libmpc-dev \
+    libmpfr-dev \
+    libssl-dev \
+    libtool \
+    libxml2-dev \
+    llvm \
+    lzma-dev \
+    mingw-w64 \
+    multistrap \
+    patch \
+    qemu-user-static \
+    xz-utils \
+    zlib1g-dev \
     && apt -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -73,8 +68,8 @@ ARG OSX_CROSS_COMMIT
 WORKDIR "${OSX_CROSS_PATH}"
 # install osxcross:
 RUN git clone https://github.com/tpoechtrager/osxcross.git . \
- && git checkout -q "${OSX_CROSS_COMMIT}" \
- && rm -rf ./.git
+    && git checkout -q "${OSX_CROSS_COMMIT}" \
+    && rm -rf ./.git
 COPY --from=osx-sdk "${OSX_CROSS_PATH}/." "${OSX_CROSS_PATH}/"
 ARG OSX_VERSION_MIN
 RUN UNATTENDED=yes OSX_VERSION_MIN=${OSX_VERSION_MIN} ./build.sh
